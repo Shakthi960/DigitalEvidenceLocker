@@ -1,0 +1,464 @@
+/* ---------- GLOBAL ---------- */
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background-image: linear-gradient(
+    109.6deg,
+    rgba(192,54,57,1) 11.2%,
+    rgba(100,20,21,1) 56.8%
+  );
+  min-height: 100vh;
+  color: #222;
+}
+
+/* ---------- NAVBAR ---------- */
+
+.navbar {
+  background: #ffffff;
+  padding: 18px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+  color: #c03639;
+}
+
+.nav-right a {
+  margin-left: 18px;
+  text-decoration: none;
+  color: #333;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.nav-right a:hover {
+  color: #c03639;
+}
+
+.logout {
+  color: #c03639 !important;
+}
+
+/* ---------- CONTAINER ---------- */
+
+.container {
+  padding: 40px;
+}
+
+/* ---------- CARD ---------- */
+
+.card {
+  background: #ffffff;
+  padding: 35px;
+  max-width: 480px;
+  margin: 80px auto;
+  border-radius: 14px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+}
+
+.card h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #c03639;
+}
+
+/* ---------- INPUTS ---------- */
+
+input, textarea {
+  width: 100%;
+  padding: 14px;
+  margin-top: 14px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 14px;
+  transition: 0.2s;
+}
+
+input:focus, textarea:focus {
+  border-color: #c03639;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(192,54,57,0.2);
+}
+
+/* ---------- BUTTON ---------- */
+
+button {
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: #c03639;
+  color: white;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #8a1f22;
+}
+
+/* ---------- ROLE BADGE ---------- */
+
+.role-badge {
+  background: #c03639;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* ---------- ALERTS ---------- */
+
+.alert {
+  padding: 14px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.alert.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.alert.danger {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* ---------- TABLE CARD ---------- */
+
+.table-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 14px;
+  margin-top: 30px;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+}
+
+/* ---------- TABLE ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+th, td {
+  padding: 14px;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #f4f4f4;
+  color: #c03639;
+  font-weight: bold;
+}
+
+tr:hover {
+  background: #fafafa;
+}
+
+/* ---------- SMALL BUTTONS ---------- */
+
+.small-btn {
+  background: #f4f4f4;
+  padding: 6px 12px;
+  border-radius: 6px;
+  text-decoration: none;
+  color: #333;
+  font-size: 12px;
+  margin: 3px;
+  display: inline-block;
+  transition: 0.3s;
+}
+
+.small-btn:hover {
+  background: #c03639;
+  color: white;
+}
+
+.small-btn.verify {
+  background: #28a745;
+  color: white;
+}
+
+.small-btn.verify:hover {
+  background: #1e7e34;
+}
+
+/* ---------- STATUS BADGES ---------- */
+
+.status {
+  padding: 6px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.status.uploaded {
+  background: #ffc107;
+  color: black;
+}
+
+.status.transferred-to-forensic,
+.status.transferred-to-court {
+  background: #17a2b8;
+}
+
+.status.forensic-verified {
+  background: #28a745;
+}
+
+.status.court-approved {
+  background: #6f42c1;
+}
+
+.status.tampered {
+  background: #dc3545;
+}
+
+/* ---------- BLOCKCHAIN ---------- */
+
+.blockchain {
+  display: grid;
+  gap: 20px;
+}
+
+.block {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.block h3 {
+  color: #c03639;
+}
+
+pre {
+  background: #f4f4f4;
+  padding: 12px;
+  border-radius: 8px;
+  overflow-x: auto;
+}
+
+/* ---------- FOOTER ---------- */
+
+.footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 60px;
+  background: #ffffff;
+  color: #555;
+  font-size: 13px;
+  box-shadow: 0 -3px 10px rgba(0,0,0,0.1);
+}
+
+/* ---------- LOGIN PAGE ---------- */
+
+.login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+}
+
+.login-card {
+  text-align: center;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.login-card h2 {
+  margin-bottom: 8px;
+  font-size: 24px;
+  color: #c03639;
+}
+
+.login-subtext {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.login-form input {
+  font-size: 14px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- DASHBOARD HEADER ---------- */
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.dashboard-header h1 {
+  color: #ffffff;
+  font-size: 26px;
+}
+
+/* ---------- PRIMARY BUTTON ---------- */
+
+.primary-btn {
+  background: #ffffff;
+  color: #c03639;
+  padding: 10px 18px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.primary-btn:hover {
+  background: #c03639;
+  color: #ffffff;
+}
+
+/* ---------- ACTION BUTTONS ---------- */
+
+.action-buttons a {
+  margin: 3px;
+}
+
+.transfer-btn {
+  background: #007bff;
+  color: white;
+}
+
+.transfer-btn:hover {
+  background: #0056b3;
+}
+
+.verify-btn {
+  background: #28a745;
+  color: white;
+}
+
+.verify-btn:hover {
+  background: #1e7e34;
+}
+
+/* ---------- UPLOAD PAGE ---------- */
+
+.upload-card {
+  max-width: 600px;
+  margin: 40px auto;
+}
+
+.upload-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #444;
+}
+
+.upload-form input[type="file"] {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* ---------- VERIFY PAGE ---------- */
+
+.verify-card {
+  max-width: 650px;
+  margin: 40px auto;
+}
+
+.evidence-info {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c03639;
+}
+
+.verify-form label {
+  display: block;
+  margin-top: 15px;
+  font-weight: 600;
+  color: #444;
+}
+
+.verify-form input[type="file"] {
+  background: #f4f4f4;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* ---------- CHAIN PAGE ---------- */
+
+.chain-card {
+  max-width: 900px;
+  margin: 40px auto;
+}
+
+.chain-header {
+  background: #f9f9f9;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 4px solid #c03639;
+}
+
+.chain-table th {
+  background: #f4f4f4;
+  color: #c03639;
+  font-weight: bold;
+}
+
+.chain-table td {
+  font-size: 14px;
+}
+
+.hash-box {
+  background: #f4f4f4;
+  padding: 10px;
+  font-size: 12px;
+  word-break: break-all;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+.hash-comparison {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.valid-hash {
+  color: green;
+  font-weight: bold;
+}
+
+.invalid-hash {
+  color: red;
+  font-weight: bold;
+}

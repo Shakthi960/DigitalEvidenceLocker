@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Digital Evidence Locker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="logo">
+      🔒 Digital Evidence Locker
+    </div>
+
+    {% if session.get("username") %}
+    <div class="nav-right">
+      <span class="role-badge">
+        {{ session.get("role") }}
+      </span>
+
+      <a href="{{ url_for('dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('view_blockchain') }}">Blockchain</a>
+      <a href="{{ url_for('logout') }}" class="logout">Logout</a>
+    </div>
+    {% endif %}
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="container">
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="alert {{category}}">
+            {{msg}}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <p>© {{ 2026 }} Digital Evidence Locker | Blockchain Secured System</p>
+  </footer>
+
+</body>
+</html>

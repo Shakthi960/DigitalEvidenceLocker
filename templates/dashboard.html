@@ -1,8 +1,108 @@
-<h2>Dashboard</h2>
-<h3>Logged in as: {{role}}</h3>
+{% extends "base.html" %}
+{% block content %}
 
-<a href="/upload">Upload Evidence</a><br><br>
-<a href="/evidence">View Evidence</a><br><br>
-<a href="/verify">Verify Evidence</a><br><br>
-<a href="/blockchain">View Blockchain JSON</a><br><br>
-<a href="/logout">Logout</a>
+<div class="dashboard-header">
+  <h1>{{ role }} Dashboard</h1>
+
+  {% if role == "Police" %}
+  <a href="{{ url_for('upload') }}" class="primary-btn">Upload Evidence</a>
+  {% endif %}
+</div>
+
+<div class="table-card">
+  <h3>Evidence Records</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Evidence ID</th>
+        <th>Case ID</th>
+        <th>File</th>
+        <th>Status</th>
+        <th>Current Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for row in evidence %}
+      <tr>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+
+        <td>
+          <span class="status {{ row[7]|lower|replace(' ','-') }}">
+            {{ row[7] }}
+          </span>
+        </td>
+
+        <td>{{ row[8] }}</td>
+
+        <td class="action-buttons">
+
+          <!-- Download -->
+          <a href="{{ url_for('download', evidence_id=row[1]) }}" class="small-btn">
+            Download
+          </a>
+
+          <!-- Chain -->
+          <a href="{{ url_for('chain', evidence_id=row[1]) }}" class="small-btn">
+            Chain
+          </a>
+
+          <!-- Police Transfer to Forensic -->
+          {% if role == "Police" and row[8] == "Police" %}
+          <a href="{{ url_for('transfer', evidence_id=row[1], next_role='Forensic') }}"
+             class="small-btn transfer-btn">
+            Send to Forensic
+          </a>
+          {% endif %}
+
+          <!-- Forensic Verify -->
+          {% if role == "Forensic" and row[8] == "Forensic" %}
+          <a href="{{ url_for('verify', evidence_id=row[1]) }}"
+             class="small-btn verify-btn">
+            Verify
+          </a>
+
+          <a href="{{ url_for('transfer', evidence_id=row[1], next_role='Court') }}"
+             class="small-btn transfer-btn">
+            Send to Court
+          </a>
+          {% endif %}
+
+          <!-- Court Verify -->
+          {% if role == "Court" and row[8] == "Court" %}
+          <a href="{{ url_for('verify', evidence_id=row[1]) }}"
+             class="small-btn verify-btn">
+            Final Approve
+          </a>
+          {% endif %}
+
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+
+  </table>
+</div>
+
+{% if old_hash and new_hash %}
+<div class="hash-comparison">
+  <h3>Verification Result</h3>
+  <p><strong>Stored Hash:</strong></p>
+  <div class="hash-box">{{ old_hash }}</div>
+
+  <p><strong>Newly Generated Hash:</strong></p>
+  <div class="hash-box">{{ new_hash }}</div>
+
+  {% if old_hash == new_hash %}
+    <p class="valid-hash">✔ Integrity Verified – No Modification</p>
+  {% else %}
+    <p class="invalid-hash">✖ Tampering Detected</p>
+  {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

@@ -1,11 +1,54 @@
-<h2>Verify Evidence</h2>
+{% extends "base.html" %}
+{% block content %}
 
-<form method="POST" enctype="multipart/form-data">
-  Evidence ID: <input name="evidence_id"><br><br>
-  Upload File Again: <input type="file" name="file"><br><br>
-  <button type="submit">Verify</button>
-</form>
+<div class="dashboard-header">
+  <h1>
+    {% if role == "Forensic" %}
+      Forensic Verification
+    {% else %}
+      Court Approval
+    {% endif %}
+  </h1>
 
-<h3>{{result}}</h3>
-<br>
-<a href="/dashboard">Back</a>
+  <a href="{{ url_for('dashboard') }}" class="primary-btn">Back</a>
+</div>
+
+<div class="card verify-card">
+
+  <div class="evidence-info">
+    <p><strong>Evidence ID:</strong> {{ evidence[1] }}</p>
+    <p><strong>Case ID:</strong> {{ evidence[2] }}</p>
+    <p>
+      <strong>Status:</strong>
+      <span class="status {{ evidence[7]|lower|replace(' ','-') }}">
+        {{ evidence[7] }}
+      </span>
+    </p>
+  </div>
+
+  <form method="POST" enctype="multipart/form-data" class="verify-form">
+
+    <label>Re-upload Evidence File for Integrity Check</label>
+    <input type="file" name="file" required>
+
+    <p><strong>Stored Hash:</strong></p>
+    <div class="hash-box">
+      {{ evidence[5] }}
+    </div>
+
+    <label>Remarks (Optional)</label>
+    <textarea name="remarks" rows="4" placeholder="Enter verification remarks"></textarea>
+
+    <button type="submit">
+      {% if role == "Forensic" %}
+        Confirm Forensic Verification
+      {% else %}
+        Final Court Approval
+      {% endif %}
+    </button>
+
+  </form>
+
+</div>
+
+{% endblock %}

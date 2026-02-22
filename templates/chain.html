@@ -1,22 +1,39 @@
-<h2>Chain of Custody - {{evidence_id}}</h2>
+{% extends "base.html" %}
+{% block content %}
 
-<table border="1">
-<tr>
-  <th>Action</th>
-  <th>Performed By</th>
-  <th>Role</th>
-  <th>Timestamp</th>
-</tr>
+<div class="dashboard-header">
+  <h1>Chain of Custody</h1>
+  <a href="{{ url_for('dashboard') }}" class="primary-btn">Back</a>
+</div>
 
-{% for row in history %}
-<tr>
-  <td>{{row[0]}}</td>
-  <td>{{row[1]}}</td>
-  <td>{{row[2]}}</td>
-  <td>{{row[3]}}</td>
-</tr>
-{% endfor %}
-</table>
+<div class="card chain-card">
 
-<br>
-<a href="/evidence">Back</a>
+  <div class="chain-header">
+    <p><strong>Evidence ID:</strong> {{ evidence_id }}</p>
+  </div>
+
+  <table class="chain-table">
+    <thead>
+      <tr>
+        <th>Action</th>
+        <th>Performed By</th>
+        <th>Role</th>
+        <th>Date & Time</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for row in history %}
+      <tr>
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+</div>
+
+{% endblock %}

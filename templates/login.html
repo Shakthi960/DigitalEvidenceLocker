@@ -1,10 +1,22 @@
-<h2>Login</h2>
-<form method="POST">
-  Username: <input name="username"><br><br>
-  Password: <input type="password" name="password"><br><br>
-  <button type="submit">Login</button>
-</form>
+{% extends "base.html" %}
+{% block content %}
 
-<p>Police: police / 123</p>
-<p>Forensic: forensic / 123</p>
-<p>Court: court / 123</p>
+<div class="login-wrapper">
+  <div class="card login-card">
+    
+    <h2>Digital Evidence Locker</h2>
+    <p class="login-subtext">
+      Secure Blockchain-Based Evidence Management System
+    </p>
+
+    <form method="POST" class="login-form">
+      <input type="text" name="username" placeholder="Enter Username" required>
+      <input type="password" name="password" placeholder="Enter Password" required>
+
+      <button type="submit">Sign In</button>
+    </form>
+
+  </div>
+</div>
+
+{% endblock %}
