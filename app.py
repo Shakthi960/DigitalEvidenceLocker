@@ -22,7 +22,6 @@ USERS = {
     "court": {"password": "123", "role": "Court"}
 }
 
-
 def generate_hash(filepath):
     sha256 = hashlib.sha256()
     with open(filepath, "rb") as f:
@@ -32,7 +31,6 @@ def generate_hash(filepath):
                 break
             sha256.update(chunk)
     return sha256.hexdigest()
-
 
 # ---------------- LOGIN ----------------
 
@@ -51,7 +49,6 @@ def login():
 
     return render_template("login.html")
 
-
 # ---------------- DASHBOARD ----------------
 
 @app.route("/dashboard")
@@ -67,7 +64,6 @@ def dashboard():
         evidence_data = fetch_role_evidence(role)
 
     return render_template("dashboard.html", role=role, evidence=evidence_data)
-
 
 # ---------------- UPLOAD ----------------
 
@@ -126,7 +122,6 @@ def upload():
 
     return render_template("upload.html")
 
-
 # ---------------- TRANSFER ----------------
 
 @app.route("/transfer/<evidence_id>/<next_role>")
@@ -163,7 +158,6 @@ def transfer(evidence_id, next_role):
     flash(f"Evidence transferred to {next_role}!", "success")
     return redirect("/dashboard")
 
-
 # ---------------- DOWNLOAD ----------------
 
 @app.route("/download/<evidence_id>")
@@ -177,7 +171,6 @@ def download(evidence_id):
         return redirect("/dashboard")
 
     return send_file(evidence[4], as_attachment=True)
-
 
 # ---------------- VERIFY ----------------
 
@@ -227,10 +220,11 @@ def verify(evidence_id):
 
         else:
             result = "Tampered"
-            update_status(evidence_id, "Tampered", "Rejected")
+            # keep evidence with same role so they can reverify
+            update_status(evidence_id, "Tampered", role)
             insert_custody(evidence_id, "Tampering Detected", session["username"], role, timestamp)
-            flash("Tampering Detected! Evidence Modified!", "danger")
-
+            flash("Tampering Detected! Please reverify the evidence.", "danger")
+        
         blockchain.add_block({
             "evidence_id": evidence_id,
             "action": result,
@@ -243,7 +237,6 @@ def verify(evidence_id):
 
     return render_template("verify.html", evidence=evidence, role=role)
 
-
 # ---------------- CHAIN ----------------
 
 @app.route("/chain/<evidence_id>")
@@ -253,7 +246,6 @@ def chain(evidence_id):
 
     history = fetch_custody(evidence_id)
     return render_template("chain.html", history=history, evidence_id=evidence_id)
-
 
 # ---------------- BLOCKCHAIN VIEW ----------------
 
@@ -265,14 +257,12 @@ def view_blockchain():
     chain_data = blockchain.get_chain()
     return render_template("blockchain.html", chain=chain_data)
 
-
 # ---------------- LOGOUT ----------------
 
 @app.route("/logout")
 def logout():
     session.clear()
     return redirect("/")
-
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

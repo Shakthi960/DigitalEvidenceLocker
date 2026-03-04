@@ -41,46 +41,64 @@
 
         <td class="action-buttons">
 
-          <!-- Download -->
-          <a href="{{ url_for('download', evidence_id=row[1]) }}" class="small-btn">
-            Download
-          </a>
+        <!-- Download -->
+        <a href="{{ url_for('download', evidence_id=row[1]) }}" class="small-btn">
+          Download
+        </a>
 
-          <!-- Chain -->
-          <a href="{{ url_for('chain', evidence_id=row[1]) }}" class="small-btn">
-            Chain
-          </a>
+        <!-- Chain -->
+        <a href="{{ url_for('chain', evidence_id=row[1]) }}" class="small-btn">
+          Chain
+        </a>
 
-          <!-- Police Transfer to Forensic -->
-          {% if role == "Police" and row[8] == "Police" %}
-          <a href="{{ url_for('transfer', evidence_id=row[1], next_role='Forensic') }}"
-             class="small-btn transfer-btn">
-            Send to Forensic
-          </a>
-          {% endif %}
+        <!-- Police Transfer -->
+        {% if role == "Police" and row[8] == "Police" %}
+        <a href="{{ url_for('transfer', evidence_id=row[1], next_role='Forensic') }}"
+          class="small-btn transfer-btn">
+          Send to Forensic
+        </a>
+        {% endif %}
 
-          <!-- Forensic Verify -->
-          {% if role == "Forensic" and row[8] == "Forensic" %}
-          <a href="{{ url_for('verify', evidence_id=row[1]) }}"
-             class="small-btn verify-btn">
-            Verify
-          </a>
+        <!-- Forensic Verification -->
+        {% if role == "Forensic" and row[8] == "Forensic" %}
 
-          <a href="{{ url_for('transfer', evidence_id=row[1], next_role='Court') }}"
-             class="small-btn transfer-btn">
-            Send to Court
-          </a>
-          {% endif %}
+            {% if row[7] == "Tampered" %}
+            <a href="{{ url_for('verify', evidence_id=row[1]) }}"
+              class="small-btn verify-btn">
+              Reverify
+            </a>
+            {% else %}
+            <a href="{{ url_for('verify', evidence_id=row[1]) }}"
+              class="small-btn verify-btn">
+              Verify
+            </a>
+            {% endif %}
 
-          <!-- Court Verify -->
-          {% if role == "Court" and row[8] == "Court" %}
-          <a href="{{ url_for('verify', evidence_id=row[1]) }}"
-             class="small-btn verify-btn">
-            Final Approve
-          </a>
-          {% endif %}
+            <a href="{{ url_for('transfer', evidence_id=row[1], next_role='Court') }}"
+              class="small-btn transfer-btn">
+              Send to Court
+            </a>
 
-        </td>
+        {% endif %}
+
+        <!-- Court Verification -->
+        {% if role == "Court" and row[8] == "Court" %}
+
+            {% if row[7] == "Tampered" %}
+            <a href="{{ url_for('verify', evidence_id=row[1]) }}"
+              class="small-btn verify-btn">
+              Reverify
+            </a>
+            {% else %}
+            <a href="{{ url_for('verify', evidence_id=row[1]) }}"
+              class="small-btn verify-btn">
+              Final Approve
+            </a>
+            {% endif %}
+
+        {% endif %}
+
+      </td>
       </tr>
       {% endfor %}
     </tbody>
