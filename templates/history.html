@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="dashboard-header">
+  <h1>Evidence History</h1>
+</div>
+
+<div class="table-card">
+
+<table>
+<thead>
+<tr>
+<th>Evidence ID</th>
+<th>Case ID</th>
+<th>Status</th>
+<th>Chain of Custody</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for row in evidence %}
+<tr>
+
+<td>{{ row[1] }}</td>
+<td>{{ row[2] }}</td>
+
+<td>
+<span class="status {{ row[7]|lower|replace(' ','-') }}">
+{{ row[7] }}
+</span>
+</td>
+
+<td>
+<a href="{{ url_for('chain', evidence_id=row[1]) }}" class="small-btn">
+View Chain
+</a>
+</td>
+
+</tr>
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+
+{% endblock %}

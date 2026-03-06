@@ -5,6 +5,8 @@ import time
 from blockchain import Blockchain
 from database import *
 
+from docx import Document   # NEW
+
 app = Flask(__name__)
 app.secret_key = "evidence_locker_secret"
 
@@ -22,21 +24,59 @@ USERS = {
     "court": {"password": "123", "role": "Court"}
 }
 
+
+# ================= HASH FUNCTION (UPDATED) =================
+
 def generate_hash(filepath):
+    ext = os.path.splitext(filepath)[1].lower()
     sha256 = hashlib.sha256()
-    with open(filepath, "rb") as f:
-        while True:
-            chunk = f.read(4096)
-            if not chunk:
-                break
-            sha256.update(chunk)
+
+    try:
+
+        # WORD FILES (.docx)
+        if ext == ".docx":
+            doc = Document(filepath)
+
+            text = ""
+            for para in doc.paragraphs:
+                text += para.text
+
+            sha256.update(text.encode("utf-8"))
+
+        # TEXT FILES
+        elif ext == ".txt":
+            with open(filepath, "r", encoding="utf-8", errors="ignore") as f:
+                content = f.read()
+                sha256.update(content.encode("utf-8"))
+
+        # DEFAULT (images, pdf, videos etc)
+        else:
+            with open(filepath, "rb") as f:
+                while True:
+                    chunk = f.read(4096)
+                    if not chunk:
+                        break
+                    sha256.update(chunk)
+
+    except Exception:
+        # fallback
+        with open(filepath, "rb") as f:
+            while True:
+                chunk = f.read(4096)
+                if not chunk:
+                    break
+                sha256.update(chunk)
+
     return sha256.hexdigest()
 
-# ---------------- LOGIN ----------------
+
+# ================= LOGIN =================
 
 @app.route("/", methods=["GET", "POST"])
 def login():
+
     if request.method == "POST":
+
         username = request.form["username"].strip()
         password = request.form["password"].strip()
 
@@ -49,10 +89,12 @@ def login():
 
     return render_template("login.html")
 
-# ---------------- DASHBOARD ----------------
+
+# ================= DASHBOARD =================
 
 @app.route("/dashboard")
 def dashboard():
+
     if "username" not in session:
         return redirect("/")
 
@@ -65,10 +107,25 @@ def dashboard():
 
     return render_template("dashboard.html", role=role, evidence=evidence_data)
 
-# ---------------- UPLOAD ----------------
+
+@app.route("/history")
+def history():
+
+    if "username" not in session:
+        return redirect("/")
+
+    role = session["role"]
+
+    # show completed evidence for history
+    evidence_data = fetch_all_evidence()
+
+    return render_template("history.html", role=role, evidence=evidence_data)
+
+# ================= UPLOAD =================
 
 @app.route("/upload", methods=["GET", "POST"])
 def upload():
+
     if "username" not in session:
         return redirect("/")
 
@@ -77,6 +134,7 @@ def upload():
         return redirect("/dashboard")
 
     if request.method == "POST":
+
         file = request.files["file"]
         case_id = request.form["case_id"].strip()
         evidence_id = request.form["evidence_id"].strip()
@@ -87,9 +145,11 @@ def upload():
 
         filename = file.filename
         filepath = os.path.join(UPLOAD_FOLDER, evidence_id + "_" + filename)
+
         file.save(filepath)
 
         file_hash = generate_hash(filepath)
+
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
         data = {
@@ -100,7 +160,7 @@ def upload():
             "file_hash": file_hash,
             "uploaded_by": session["username"],
             "status": "Uploaded",
-            "current_role": "Police",   # stays with police until transferred
+            "current_role": "Police",
             "forensic_remarks": "-",
             "court_remarks": "-",
             "timestamp": timestamp
@@ -118,14 +178,17 @@ def upload():
         })
 
         flash("Evidence Uploaded Successfully!", "success")
+
         return redirect("/dashboard")
 
     return render_template("upload.html")
 
-# ---------------- TRANSFER ----------------
+
+# ================= TRANSFER =================
 
 @app.route("/transfer/<evidence_id>/<next_role>")
 def transfer(evidence_id, next_role):
+
     if "username" not in session:
         return redirect("/")
 
@@ -156,32 +219,39 @@ def transfer(evidence_id, next_role):
     })
 
     flash(f"Evidence transferred to {next_role}!", "success")
+
     return redirect("/dashboard")
 
-# ---------------- DOWNLOAD ----------------
+
+# ================= DOWNLOAD =================
 
 @app.route("/download/<evidence_id>")
 def download(evidence_id):
+
     if "username" not in session:
         return redirect("/")
 
     evidence = fetch_single_evidence(evidence_id)
+
     if not evidence:
         flash("Evidence not found!", "danger")
         return redirect("/dashboard")
 
     return send_file(evidence[4], as_attachment=True)
 
-# ---------------- VERIFY ----------------
+
+# ================= VERIFY =================
 
 @app.route("/verify/<evidence_id>", methods=["GET", "POST"])
 def verify(evidence_id):
+
     if "username" not in session:
         return redirect("/")
 
     role = session["role"]
 
     evidence = fetch_single_evidence(evidence_id)
+
     if not evidence:
         flash("Evidence not found!", "danger")
         return redirect("/dashboard")
@@ -191,27 +261,37 @@ def verify(evidence_id):
         return redirect("/dashboard")
 
     if request.method == "POST":
+
         file = request.files["file"]
+
         remarks = request.form.get("remarks", "").strip()
 
         temp_path = "temp_" + file.filename
+
         file.save(temp_path)
 
         new_hash = generate_hash(temp_path)
+
         os.remove(temp_path)
 
         old_hash = fetch_hash(evidence_id)
+
         timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
 
         if old_hash == new_hash:
+
             result = "Verified"
 
             if role == "Forensic":
+
                 update_forensic_remarks(evidence_id, remarks if remarks else "Verified by Forensic")
+
                 update_status(evidence_id, "Forensic Verified", "Forensic")
 
             elif role == "Court":
+
                 update_court_remarks(evidence_id, remarks if remarks else "Approved by Court")
+
                 update_status(evidence_id, "Court Approved", "Completed")
 
             insert_custody(evidence_id, f"Verified by {role}", session["username"], role, timestamp)
@@ -219,12 +299,15 @@ def verify(evidence_id):
             flash("Evidence Verified Successfully!", "success")
 
         else:
+
             result = "Tampered"
-            # keep evidence with same role so they can reverify
+
             update_status(evidence_id, "Tampered", role)
+
             insert_custody(evidence_id, "Tampering Detected", session["username"], role, timestamp)
+
             flash("Tampering Detected! Please reverify the evidence.", "danger")
-        
+
         blockchain.add_block({
             "evidence_id": evidence_id,
             "action": result,
@@ -237,32 +320,42 @@ def verify(evidence_id):
 
     return render_template("verify.html", evidence=evidence, role=role)
 
-# ---------------- CHAIN ----------------
+
+# ================= CHAIN =================
 
 @app.route("/chain/<evidence_id>")
 def chain(evidence_id):
+
     if "username" not in session:
         return redirect("/")
 
     history = fetch_custody(evidence_id)
+
     return render_template("chain.html", history=history, evidence_id=evidence_id)
 
-# ---------------- BLOCKCHAIN VIEW ----------------
+
+# ================= BLOCKCHAIN =================
 
 @app.route("/blockchain")
 def view_blockchain():
+
     if "username" not in session:
         return redirect("/")
 
     chain_data = blockchain.get_chain()
+
     return render_template("blockchain.html", chain=chain_data)
 
-# ---------------- LOGOUT ----------------
+
+# ================= LOGOUT =================
 
 @app.route("/logout")
 def logout():
+
     session.clear()
+
     return redirect("/")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

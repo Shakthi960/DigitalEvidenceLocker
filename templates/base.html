@@ -20,8 +20,13 @@
       <span class="role-badge">
         {{ session.get("role") }}
       </span>
-      
+
       <a href="{{ url_for('dashboard') }}">Dashboard</a>
+
+      {% if session.get("role") != "Police" %}
+      <a href="{{ url_for('history') }}">History</a>
+      {% endif %}
+
       <a href="{{ url_for('logout') }}" class="logout">Logout</a>
     </div>
     {% endif %}
