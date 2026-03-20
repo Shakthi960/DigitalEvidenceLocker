@@ -81,6 +81,12 @@
 
         {% endif %}
 
+        {% if row[11] != "-" %}
+        <a href="{{ url_for('download_report', evidence_id=row[1]) }}" class="small-btn verify-btn">
+        Report
+        </a>
+        {% endif %}
+
         <!-- Court Verification -->
         {% if role == "Court" and row[8] == "Court" %}
 

@@ -31,13 +31,13 @@
     <label>Re-upload Evidence File for Integrity Check</label>
     <input type="file" name="file" required>
 
-    <p><strong>Stored Hash:</strong></p>
-    <div class="hash-box">
-      {{ evidence[5] }}
-    </div>
-
     <label>Remarks (Optional)</label>
     <textarea name="remarks" rows="4" placeholder="Enter verification remarks"></textarea>
+
+    {% if role == "Forensic" %}
+    <label>Upload Forensic Report (Optional)</label>
+    <input type="file" name="report">
+    {% endif %}
 
     <button type="submit">
       {% if role == "Forensic" %}

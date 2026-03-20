@@ -14,6 +14,7 @@
 <th>Case ID</th>
 <th>Status</th>
 <th>Chain of Custody</th>
+<th>Delete</th>
 </tr>
 </thead>
 
@@ -36,6 +37,22 @@
 View Chain
 </a>
 </td>
+
+{% if role == "Court" %}
+<td>
+
+<form method="POST" action="{{ url_for('delete_evidence', evidence_id=row[1]) }}">
+
+<input type="password" name="delete_password" placeholder="Delete Password" required>
+
+<button class="small-btn">Delete</button>
+
+</form>
+
+</td>
+{% else %}
+<td>-</td>
+{% endif %}
 
 </tr>
 {% endfor %}
